@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include head.html %}
+  <style>
+    .rr-head-hero {
+      width: 80%; 
+      display: list-item;
+    }
+    @media screen and (max-width: 600px) {
+      .rr-head-consoles {
+        display: none;
+      }
+      .rr-head-hero {
+        width: 100%; 
+        display: list-item;
+      }
+    }
+    
+    .console-img {
+      width: 45px;
+    margin-left: 10px;
+    }
+    .head-console-list {
+      padding: 5px;
+      overflow: scroll;
+      height: 350px;
+    }
+    .head-console-item {
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+    }
+    .head-console-item:hover {
+      background-color: rgba(255,255,255,0.1)
+    }
+    .head-console-item strong {
+        color:white;
+      padding: 10px
+    }
+  </style>
+</head>
+<body class="fixed-header">
+  <!-- header -->
+  {% include header.html %}
+  <!-- /header -->
+
+  <!-- main -->
+  <div style="display:flex; width:100%; height:350px;">
+    <div class="rr-head-hero">
+      {% include hero.html %}
+    </div>
+    <div class="rr-head-consoles" style="width:20%; background-color: #292F33;">
+	    	<ul class="head-console-list">
+            <a href="/n64/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="https://www.retroreversing.com/public/consoles/Nintendo%2064.png" /> <strong>Nintendo 64</strong></li></a>
+            <a href="/ps1/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/consoles/Sony%20Playstation.png" /> <strong>Sony Playstation</strong></li></a>
+            <a href="/saturn/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/consoles/Sega%20Saturn.png" /> <strong>Sega Saturn</strong></li></a>
+            <a href="/gameboy/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/NintendoGameBoyThumb.png" /> <strong>Nintendo GameBoy</strong></li></a>
+            <a href="/ps2" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/consoles/Sony%20PlayStation%202.png" /> <strong>Sony Playstation 2</strong></li></a>  
+            <a href="/xbox/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/consoles/Microsoft%20Xbox.png" /> <strong>Microsoft Xbox</strong></li></a>
+            <a href="/wiiU/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/consoles/Nintendo%20WiiU.png" /> <strong>Nintendo Wii U</strong></li></a>
+            <a href="/dreamcast/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/consoles/Sega%20Dreamcast.png" /> <strong>Sega Dreamcast</strong></li></a>
+          <a href="/PokemonMini/" target="_blank"><li class="head-console-item"> <img alt="img" class="console-img" src="/public/consoles/PokemonMini.png" /> <strong>Pokemon Mini</strong></li></a> 
+          
+        </ul>
+    </div>
+  </div>
+
+  <section class="toolbar toolbar-links">
+    <div class="container" style="width:80%">
+      <h5>Latest Posts ({{site.pages | size}})</h5>
+      
+      <!--<ul class="toolbar-nav hidden-md-down m-r-25">
+        <li><a href="#tutorials">Tutorials</a></li>
+        <li class="active"><a href="#games">Games</a></li>
+      </ul>-->
+    </div>
+  </section>
+
+  <section class="rr-home-section">
+    <div class="container">
+      <div class="row row-5">
+        {% assign all_pages = site.pages | sort: 'updatedAt' | reverse %}
+        {% for post in all_pages %}
+        {% if post.image or post.youtube %}
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="card card-video wow slideInUp">
+                  <div class="card-img">
+                      <a href="{{ post.url }}" target="_blank">
+                        {% if post.image %}
+                            <img class="lazy-load" data-image-full="{{ post.image }}" alt="{{ post.title }}">
+                        {% else if post.youtube %}
+                            <img class="lazy-load" data-image-full="https://img.youtube.com/vi/{{ post.youtube }}" alt="{{ post.title }}">
+                        {% endif %}
+                      </a>
+                      {% if post.recommend %}
+                        <div class="card-meta">
+                          {% if post.recommend.first %}
+                            <span>{{ post.recommend.first }}</span>
+                          {% else %}
+                            <span>{{ post.recommend }}</span>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                  </div>
+                  <div class="card-block">
+                       <h4 class="card-title"><a href="{{ post.url }}" target="_blank" >{{ post.title }}</a></h4>
+                       <div class="card-meta">
+                         {% if post.updatedAt %}
+                            <span><i class="fa fa-clock-o"></i> {{ post.updatedAt | date_to_long_string: "ordinal" }}</span>
+                         {% endif %}
+<!--                         <span>436 views</span> -->
+                       </div>      
+                  </div>
+              </div>
+        </div>
+        {% endif %}
+        {% endfor %}     
+      </div>
+      
+      
+   
+    </div>
+    
+    <div class="rr-twitter">
+      <a class="twitter-timeline" data-theme="dark" href="https://twitter.com/RetroReversing?ref_src=twsrc%5Etfw" target="_blank">Tweets by RetroReversing</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+    </div>
+      
+  </section>
+  <!-- /main -->
+
+  {% include footer.html %}
+
+ 
+</body>
+</html>

@@ -1,0 +1,100 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+<!-- <div class="folder-browser">
+</div> -->
+
+<script>
+  
+  function cleanId(id) {
+    var cleanedId = id.replace(/\:/g, '');
+    cleanedId = cleanedId.replace(/\W/g, '-');
+    return cleanedId.toLowerCase();
+  }
+  
+function convertPathsToJsTree(paths) {
+  const data = [];
+  const generatedIds={};
+  paths.forEach((path)=>{
+    let splitPathParts = [];
+    if (path.indexOf('\\') !==-1) {
+      splitPathParts = path.split('\\');
+    } else {
+      splitPathParts = path.split('/');
+    }
+    splitPathParts.forEach((part,level)=>{
+      const id = cleanId(splitPathParts.slice(0,level+1).join('-'));
+      const parent = cleanId(splitPathParts.slice(0,level).join('-')) || '#';
+      var splittedFileName = part.split('.');
+      var extension = "";
+      if (splittedFileName.length>1) {
+          extension = splittedFileName[splittedFileName.length-1].toLowerCase();
+      }
+      console.info("TODO: get extension:", splittedFileName, extension);
+      const json = { id, parent, text: part, "a_attr": {"data-type": extension} };
+      if (extension.length>0) {
+        json.icon = "file-icon";
+        json["a_attr"] = {"data-type": extension};
+      }
+      if (id.length>0 && !generatedIds[id]) {
+        data.push(json);
+        generatedIds[id] = true;
+      }
+    });
+  });
+  return data;
+}
+
+  var treeData = [];
+{% if include.selector %}
+var fileListid = '{{include.selector}}';
+var cssSelector = fileListid+' li';
+var listElements = $(cssSelector);
+
+var arrayOfPaths = [];
+if (listElements.length>0) {
+  listElements.each(function(){
+      arrayOfPaths.push($(this).text());
+  });
+  
+  treeData = convertPathsToJsTree(arrayOfPaths);
+  console.log('JSTree data:'+JSON.stringify(treeData));
+  listElements.hide();
+}
+ {% endif %}
+  
+$('{{include.selector}}').jstree({
+  "core" : {
+    "animation" : 0,
+    "check_callback" : true,
+    "themes" : { "stripes" : true },
+    {% if include.data %}
+      "data": {{include.data}}
+    {% else %}
+        "data": treeData
+   {% endif %}
+  },
+  "types" : {
+    "#" : {
+      "max_children" : 20,
+      "max_depth" : 20,
+      "valid_children" : ["root"]
+    },
+    "root" : {
+      "icon" : "/static/3.3.7/assets/images/tree_icon.png",
+      "valid_children" : ["default"]
+    },
+    "default" : {
+      "valid_children" : ["default","file"]
+    },
+    "file" : {
+      "icon" : "glyphicon glyphicon-file",
+      "valid_children" : []
+    }
+  },
+  "plugins" : [
+    "search",
+    "state", "types", "wholerow"
+  ]
+});
+</script>

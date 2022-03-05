@@ -1,0 +1,55 @@
+---
+layout: none
+---
+<?xml version="1.0" encoding="utf-8"?>
+{% if page.xsl %}
+  <?xml-stylesheet type="text/xml" href="{{ '/feed.xslt.xml' | absolute_url }}"?>
+{% endif %}
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
+  <link href="https://www.retroreversing.com/feed.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://www.retroreversing.com/" rel="alternate" type="text/html"/>
+  <updated>2020-12-19T14:45:09+00:00</updated>
+  <id>https://www.retroreversing.com/feed.xml</id>
+  <title type="html">RetroReversing</title>
+  <subtitle> Retro Video Game Reverse Engineering.</subtitle>
+  
+  {% assign all_pages = site.pages | sort: 'updatedAt' | reverse %}
+    {% for post in all_pages limit:10 %}
+      {% if post.image or post.youtube %}
+        <entry>
+          <title type="html">{{ post.title }}</title>
+          <link href="https://www.retroreversing.com{{ post.url }}" rel="alternate" type="text/html" title="{{ post.title }}"/>
+          <published>{{ post.updatedAt }}T00:00:00+00:00</published>
+          <updated>{{ post.updatedAt }}T00:00:00+00:00</updated>
+          <id>https://www.retroreversing.com{{ post.url }}</id>
+          <content type="html" xml:base="https://www.retroreversing.com{{ post.url }}"></content>
+          <author>
+            <name>Retro Reversing</name>
+          </author>
+          {% if post.recommend %}
+            <div class="card-meta">
+              {% if post.recommend.first %}
+                <category term="{{ post.recommend.first }}"/>
+              {% else %}
+                <category term="{{ post.recommend }}"/>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          {% if post.excerpt %}
+            <summary type="html">{{post.excerpt}}</summary>
+          {% else %}
+            <summary type="html">Find out about {{post.title}} in this post</summary>
+          {% endif %}
+          {% if post.image %}
+                <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.retroreversing.com/{{ post.image }}"/>
+                <media:content xmlns:media="http://search.yahoo.com/mrss/" medium="image" url="https://www.retroreversing.com/{{ post.image }}"/>
+          {% else if post.youtube %}
+                <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://img.youtube.com/vi/{{ post.youtube }}"/>
+                <media:content xmlns:media="http://search.yahoo.com/mrss/" medium="image" url="https://img.youtube.com/vi/{{ post.youtube }}"/>
+          {% endif %}
+        </entry>
+      {% endif %}
+    {% endfor %}  
+</feed>

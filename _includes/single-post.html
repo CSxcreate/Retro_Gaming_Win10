@@ -1,0 +1,34 @@
+<div class="post post-single">
+      <div class="post-header">
+        <div>
+          <img src="{{ page.thumbnail }}" alt="">
+        </div>
+        <div>
+          <h2 class="post-title">{{ page.title }}</h2>                
+        </div>
+        <div>
+          {% assign filename = page.url | replace_first: '/', '' | replace: '/', '-'  | replace: '.html', '.md' %}
+          <h4>Contribute to this page: <a href="{{filename}}">Edit on github</a></h4>
+        </div>
+        
+      </div>
+      {{ content | markdownify }}
+    </div>
+    <div class="post-actions">
+      
+        {% if page.tags %}
+          <div class="post-tags">
+            {% for tag in page.tags %}
+              <a href="{{ site.baseurl }}/{{ tag | slugify }}" class="post-tag">{{ tag }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      <div class="social-share">
+        <a class="btn btn-social btn-facebook btn-circle" href="#" data-toggle="tooltip" title="" data-placement="bottom" role="button" data-original-title="Share on facebook"><i class="fa fa-facebook"></i></a>
+        <span>0</span>
+        <a class="btn btn-social btn-twitter btn-circle" href="#" data-toggle="tooltip" title="" data-placement="bottom" role="button" data-original-title="Share on twitter"><i class="fa fa-twitter"></i></a>
+        <a class="btn btn-social btn-google-plus btn-circle" href="#" data-toggle="tooltip" title="" data-placement="bottom" role="button" data-original-title="Share on google-plus"><i class="fa fa-google-plus"></i></a>
+      </div>
+    </div>
+</div>

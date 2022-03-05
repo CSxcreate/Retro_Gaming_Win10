@@ -1,0 +1,87 @@
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-73112364-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-73112364-3');
+</script>
+
+
+  <!-- meta -->
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  
+<!--  Twitter Meta  -->
+<meta name="twitter:site" content="@RetroReversing">
+<meta name="twitter:creator" content="@RetroReversing">
+  
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  
+  <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+
+  <title>
+    {% if page.title == "Home" %}
+      {{ site.title }} &middot; {{ site.tagline }}
+    {% else %}
+      {{ page.title }} &middot; {{ site.title }}
+    {% endif %}
+  </title>
+
+  <!-- CSS -->
+  <!-- <link rel="stylesheet" href="{{ site.baseurl }}/public/css/main.css">-->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css">
+  
+<!--  Vendor CSS  -->
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/animate.min.css">
+  <link href="/public/css/owl.carousel.min.css" rel="stylesheet">
+  
+<!--  Game Forest CSS  -->
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/theme.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/custom.css">
+  
+<!--  Code highlight css  -->
+ <link rel="stylesheet" href="{{ site.baseurl }}/public/css/code.css"> 
+  
+<!--  Site specific CSS  -->
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/theme.overrides.css">
+  
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/mermaid.css">
+  
+<!--  JSTree Folder view css  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ site.baseurl }}/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="{{ site.baseurl }}/public/favicon.ico">
+  
+<!--  File Icons  -->
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/fileicon.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/cssfolder.css">
+  
+<!--  Code Cards  -->
+  <link rel="stylesheet" href="{{ site.baseurl }}/public/css/code-cards.css">
+
+  
+  <!-- RSS -->
+<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+  
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-colvis-1.5.2/b-html5-1.5.2/r-2.2.2/rg-1.0.3/sc-1.5.0/datatables.min.css"/>
+ 
+
+  {% if site.mathjax %}
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  {% endif %}
+</head>

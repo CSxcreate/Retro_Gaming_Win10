@@ -1,0 +1,165 @@
+
+
+.rr-source-code-title {
+  text-align: center;
+  margin-top: 20px;
+  font: 200 35px "Poppins", sans-serif;
+}
+
+.rr-func-args {
+  color: #4eb9c0;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  overflow-x: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  cursor: pointer;
+  height: 18px;
+  overflow-y: hidden;
+}
+
+.rr-func-args:hover {
+  white-space: normal;
+}
+
+/* Start File Statistics */
+
+.rr-file-stats {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.rr-file-stat {
+  font: 500 15px "Poppins", sans-serif;
+  color: #111;
+  display: inline-grid;
+  padding-bottom: 10px;
+}
+
+.rr-file-stat:before {
+  color: #666a6d;
+  font: 200 10px/1.2 "Poppins", sans-serif;
+  text-transform: uppercase;
+}
+
+.rr-file-stats-functions:before {
+  content: "Functions";
+}
+
+.rr-file-stats-variables:before {
+  content: "Variables";
+}
+
+.rr-file-stats-lines:before {
+  content: "Lines";
+}
+/* End file Statistics */
+
+.rr-file-card {
+  position: relative;
+  box-shadow: 0 3px 15px rgba(51, 51, 51, 0.2);
+  border-radius: 10px;
+  transition: 0.2s ease;
+/*   padding-left: 5%;
+  padding-right: 5%; */
+  min-width: 250px;
+  border-radius: 10px;
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.rr-file-card h3 {
+  font: 700 24px/1.2 "Poppins", sans-serif;
+  margin-bottom: 10px;
+  margin-top: 0px;
+}
+
+.rr-file-card ul {
+  border-bottom: 0.5px solid #999;
+  padding-bottom: 10px;
+  list-style: none;
+  overflow-y: scroll;
+  height: 200px;
+  max-width: 245px;
+  margin: 0px;
+  padding: 0px;
+  margin-left: 15px;
+  margin-right: 15px;
+  font-size: 11px;
+}
+
+.rr-file-card div {
+  max-width: 245px;
+}
+
+.rr-file-card li {
+  color: darkblue;
+  cursor: pointer;
+  transition: 0.4s ease;
+  margin-bottom: 5px;
+  text-align: left;
+  display: flex;
+  width: fit-content;
+}
+
+/* First child is the TYPE of the variable/function */
+.rr-file-card li span:first-child {
+  color: #569BD5;
+  min-width: 80px;
+  max-width: 80px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* You can hover over the TYPE to show the full type name if it was too long */
+.rr-file-card li span:first-child:hover {
+    white-space: normal;
+}
+
+.rr-file-card li:hover {
+  background-color: rgba(1, 1, 1, 0.05);
+}
+.rr-file-card li:hover .rr-func-args {
+  white-space: wrap;
+  max-width: 500px;
+}
+.rr-file-card img {
+/*   margin-top: -40px;
+  margin-left: 30%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%; */
+  width: 100%;
+  height: 50px;
+  border-radius: 5%;
+}
+
+.rr-main-cards {
+  background: #f9f9f9;
+  display: flex;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  line-height: 1.4;
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+/*   margin: 2em auto 7em; */
+  margin-top: 5px;
+/*   display: grid; */
+/*   grid-gap: 15px;
+  grid-template-columns: repeat(6, auto);
+  grid-template-rows: repeat(4, auto); */
+/*   justify-content: center; */
+  overflow-x: scroll;
+  margin-left: -100px;
+  padding-left: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}

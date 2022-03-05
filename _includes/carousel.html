@@ -1,0 +1,18 @@
+{% if page.carousel %}
+<section class="bg-inverse p-y-0">
+    <div class="owl-carousel owl-slide full-height">
+      {% for item in page.carousel %}
+      <div class="carousel-item" style="background-image: url('{{ item.image }}');">
+        <div class="carousel-overlay"></div>
+        <div class="carousel-caption">
+          <div>
+            <h3 class="carousel-title">{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+            <a class="btn btn-primary btn-rounded btn-shadow btn-lg" href="{{ item.link }}" role="button">Watch</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}

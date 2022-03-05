@@ -1,0 +1,230 @@
+---
+layout: post
+tags: 
+- tools
+- fileformats
+title: Central Point Backup Format Visualiser (CPBACKUP.001,.002..)
+permalink: /centralPointBackup
+recommend: fileformats
+editlink: ../tools/CentralPointBackupVisualizer.html
+---
+<h1>Central Point Backup Restoring</h1>
+Recently I was sent some really interesting files that are known to contain Spiderman Sega mega drive source assets, they were ripped from floppy disks. However instead of using the normal FAT format it just has 1 file per disk, CPBACKUP.001, CPBACKUP.002 and CPBACKUP.003. 
+
+These are Central Point Backup files created either from a version of DOS or a really early version of windows, as the files have a timestamp of 1993.
+
+Unfortunately Central Point stopped making the software after getting bought out and so there is no version for anything above Windows 3.1.
+
+Drop a CPBackup.001 format file such as .001 in the box below to see a breakdown of what each byte means, if you have a .002 or onwards file try concatinating it with the .001 in order:
+{% include file-parser.html format="001" %}
+
+<style>
+  .BUILD_DATE,.BUILD_TIME,.MODULE_NAME,.SYMBOL_NAME {
+    color: green;
+  }
+  .UNIT_HEADER {
+    color: yellow;
+  }
+</style>
+
+<script>
+var _window$binary_unpars = window["binary_unparser"],Parser = _window$binary_unpars.Parser,FileUnparser = _window$binary_unpars.FileUnparser,ReactUnparser = _window$binary_unpars.ReactUnparser,Buffer = _window$binary_unpars.Buffer;
+
+var cpbackupDirectory = new Parser.Parser()
+  .endianess("little")
+  .uint16("MagicHeaderForDirectory")
+  .string("DirectoryName", {length: 13})
+  
+var cpbackupSlowFile = new Parser.Parser()
+  .endianess("little")
+  .uint16("MagicHeaderForFile")
+  .string("Filename", {length: 13})
+  .uint16("Date")
+  .uint16("Time")
+  .uint8("Unknown")
+  .uint32("SizeOfUncompressedFile")
+  
+ var cpbackupSlowData = new Parser.Parser()
+  .endianess("little")
+  .uint16("DataLength")
+  .array("Files", {
+      type: 'uint8',
+      length: "DataLength" 
+  })
+  
+ var cpbackupFastData = new Parser.Parser()
+  .endianess("little")
+  .uint16("DataLength")
+  .array("CompressedContent", {
+      type: 'uint8',
+      length: function() { 
+        if (this.DataLength === 0xFFFF) {
+          return 0;
+        }
+        var length = this.DataLength;
+        var mask = 1 << 15;
+        length &= ~mask;
+//         console.error("Old length:", this.DataLength, "New length:", length, "offset:",offset)                  
+       return length;
+     }
+  })
+   .array("Logging", {
+      type: 'uint8',
+      length: function() {
+        console.error("This:",this, "offset", offset);
+      return 0;
+      }
+ });
+
+var cpbackupSlowHeader = new Parser.Parser()
+  .endianess("little")
+  .string("SCP", { length: 3})
+  .uint8("NumberOfFolders")
+  .uint8("NumberOfFiles")
+  .uint8("Unknown")
+  .array("Directories", {
+      type: cpbackupDirectory,
+      length: "NumberOfFolders" 
+  })
+  .array("SlowFiles", {
+      type: cpbackupSlowFile,
+      length: "NumberOfFiles" 
+  })
+  .uint32("Unknown2")
+  .uint16("Unknown3")
+
+// Fast version (Non-Dos Big Endian)
+var cpbackupFastFile = new Parser.Parser()
+  .endianess("little")
+  .uint16("MagicHeaderForFile")
+  .string("Filename", {length: 13})
+  .uint8("Date1")
+  .uint8("CompressedHigh")
+  .uint16("UnCompressedSize1")
+  .uint16("UnCompressedSize2") // Add these two together to get the full uncompressed size
+  .uint8("Unknown")
+  .uint8("Time1")
+  .uint8("CompressedLow")
+  .uint8("Date2")
+  .uint8("Time2")
+  .uint8("UnknownByte")
+  .uint16("UnknownWordNormally7")
+  .uint16("UnknownWordAgain")
+  .skip(1)
+  .array("Compressed", { 
+    type:cpbackupFastData, 
+    length: 1,
+//     readUntil: function(item, buffer) { 
+//       if (buffer.length<16) return true; // failsafe
+//       if (buffer[0] === 0xFF && buffer[1] === 0xFF) {
+//         console.error("Done (Reached 0xFF 0xFF)",buffer[0],buffer[1],buffer[2]);
+//         return true;
+//       }
+//       console.error("Keep going offset:", offset," buffer:", buffer);
+//       return false;
+      
+//     }
+  })
+
+
+//   .array("Compressed_old", {
+//       type: 'uint8',
+//       length: function() {
+//         return (this.CompressedHigh*256)+ this.CompressedLow;
+//       }
+//     readUntil: function(item, buffer) { 
+//       if (buffer.length<16) return true;
+//       var isAnotherSection = buffer[0] === 0xFF && buffer[1] === 0xDB; 
+//       var isEndOfAllFiles = buffer[0] === 0x44 && buffer[1] === 0x43 && buffer[2] === 0x50;
+//       return isAnotherSection || isEndOfAllFiles;
+//     }
+    // possibly readUntil: 0xFFDB
+//   })
+// .array("MoreCompressed", {type: cpbackupFastData, 
+//                          readUntil: function(item, buffer) { 
+//       var isAnotherSection = buffer[0] === 0xFF && buffer[1] === 0xDB; 
+//       var isEndOfAllFiles = buffer[0] === 0x44 && buffer[1] === 0x43 && buffer[2] === 0x50;
+//                            //console.error("Datalen:", this, offset, this.Filename);
+//       return isAnotherSection || isEndOfAllFiles;
+//     }
+//                          })
+  .skip(2)
+//   .skip(function() { console.log('this file:',this, 'offset:',offset) })
+  
+
+var cpbackupFastHeader = new Parser.Parser()
+  .endianess("big")
+  .skip(-1) // go back as the choice read a byte that we need
+  .array("Directories", {
+      type: cpbackupDirectory,
+      readUntil: function(item, buffer) { return buffer[0] !== 0xDA; }
+  })
+  .array("FastFiles", { type: cpbackupFastFile,
+                       length:1,
+//                  readUntil: function(item, buffer) { 
+//                    console.error("ReadUntil Fast current buffer:", buffer[0], "buffer1:", buffer[1], buffer, 'offset:',offset);
+//                    return buffer[0] !== 0xDB; 
+//                  } 
+                      })
+.array("FastFiles2", { type: cpbackupFastFile,
+                       length:1})
+;
+
+var CPBackupFile = new Parser.Parser()
+  .endianess("little")
+  .uint8("FormatType")
+  .choice("Content", {
+    tag: "FormatType",
+    choices: {
+      1: cpbackupSlowHeader
+    },
+    defaultChoice: cpbackupFastHeader
+  })
+
+var cpbackupFileUnParser = new ReactUnparser(CPBackupFile);
+  
+  var cpbackupBinaryUP = new FileUnparser(CPBackupFile);
+
+  function convertToSlowFormat(file, parsedResult) {
+    var slowFormat = parsedResult;
+    console.error("TODO convert fast to slow CPbackup here");
+    console.error("Unparsed:",cpbackupBinaryUP.unparse(slowFormat, file));
+  }
+
+  function onParseCallback(file, parsedResult) {
+    console.error("parsedResult:", parsedResult);
+    convertToSlowFormat(file, parsedResult);
+  }
+
+var draghint = document.getElementById('draghint');
+window.addEventListener('drop', function (event) {
+  event.preventDefault();
+  draghint.classList.remove('hover');
+  for (var i = 0; i < event.dataTransfer.files.length; i++) {
+    var file = event.dataTransfer.files[i];
+    var c = document.createElement('canvas');
+    c.id = 'v64' + i;
+    $('#v64').append(c);
+    console.log(file, i, c);
+    parseFile(file, CPBackupFile, cpbackupFileUnParser, false, onParseCallback);
+  }
+  return false;
+});
+window.addEventListener('dragover', function (event) {
+  event.preventDefault();
+  draghint.classList.add('hover');
+  return false;
+});
+window.addEventListener('dragleave', function (event) {
+  event.preventDefault();
+  draghint.classList.remove('hover');
+  return false;
+});
+window.addEventListener('focus', function () {
+  return draghint.classList.remove('hover');
+});
+  </script>
+
+# References
+[^1]: http://www.os2museum.com/wp/the-central-point-backup-floppy-format/
+[^2]: https://www.pcjs.org/disks/pcx86/dos/ibm/5.00/ 

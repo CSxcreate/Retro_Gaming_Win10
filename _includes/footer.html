@@ -1,0 +1,225 @@
+<!-- footer -->
+  <footer id="footer">
+    <div class="container">
+          <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <h4 class="footer-title">About RetroReversing</h4>
+                <p>RetroReversing is a hand-picked list of the best Reverse Engineering material available on the web. All our content is of high quality and all content references the original source.</p>
+              </div>
+            <div class="col-sm-12 col-md-6">
+                <h4 class="footer-title">Help Us Provide the Correct Answer</h4>
+                <p>"The best way to get the right answer on the internet is not to ask a question; it's to post the wrong answer." - Cunningham's Law</p>
+            </div>
+            
+          </div>
+          <div class="footer-bottom">
+            <div class="footer-social">
+              <a rel="noreferrer" href="https://twitter.com/RetroReversing" target="_blank" data-toggle="tooltip" title="twitter"><i class="fa fa-twitter"></i></a>
+              <a rel="noreferrer" href="https://www.youtube.com/user/RetroReversing" target="_blank" data-toggle="tooltip" title="youtube"><i class="fa fa-youtube"></i></a>
+              <a rel="noreferrer" href="/atom.xml" target="_blank" data-toggle="tooltip" title="rss"><i class="fa fa-rss"></i></a>
+               
+            </div>
+            <p>Copyright &copy; 2020 <a href="https://www.retroreversing.com/" target="_blank">Retro Reversing</a>. All rights reserved.</p>
+          </div>
+    </div>
+  </footer>
+  <!-- /footer -->
+<script src="/public/js/jquery.min.js"></script>
+<script src="/public/js/popper.min.js"></script>
+<script src="/public/js/bootstrap.min.js"></script>
+<script src="/public/js/owl.carousel.min.js"></script>
+<script src="/public/js/lightbox.js"></script>
+<script src="/public/js/mermaid.min.js"></script>
+<script src="/public/js/wow.min.js"></script>
+<script src="/public/js/generateTOC.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script> -->
+<script src="/public/js/binary_parser.bundle.js"></script>
+<script src="/public/js/binary_unparser.bundle.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script> -->
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.2/b-colvis-1.5.2/b-html5-1.5.2/r-2.2.2/rg-1.0.3/sc-1.5.0/datatables.min.js"></script>
+
+<!-- GeoPattern generates a nice patten for any element that has class="geopatten" and data-title="whatever" -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/geopattern/1.2.3/js/geopattern.min.js"></script>
+
+<script>
+$(function() {
+	$('.geopattern').each(function geoP() {
+		$(this).geopattern($(this).attr('data-title'));
+	})
+});
+</script>
+<!-- End GeoPattern -->
+
+  <script>
+    
+    // wait for the entire page to finish loading
+    window.addEventListener('load', function() {
+
+      // setTimeout to simulate the delay from a real page load
+      setTimeout(lazyLoad, 1000);
+
+    });
+    
+    function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(find, 'g'), replace);
+}
+    
+    function handle_tab_groups() {
+      var rr_tab_groups = $(".rr-tabs");
+
+      rr_tab_groups.each(function loop_tab_group(index, tab_group) {
+        var rr_tabs = $(tab_group).find('.rr-tab');
+
+        var li_tabs = rr_tabs.map(function mapTabsToHeaders(i,v) {
+          var title = $(v).attr('title'); 
+          var isdefault = $(v).attr('default') === "";
+          var classnames = "";
+          if (isdefault) {
+            classnames = "active"
+          }
+          var href_title=replaceAll(title,' ','___');
+          return '<li><a class="'+classnames+'" href="#/'+href_title+'">'+title+'</a></li>';
+        });
+        
+        var result_html = li_tabs.toArray().join('');
+        $(tab_group).prepend('<ul class="tabs group">'+result_html+'</ul>');
+
+        var tabs =  $(tab_group).find(".tabs li a");
+
+        $(tab_group).find('.rr-tab').hide();
+        $(tab_group).find('div[default]').show();
+
+        tabs.click(function() {
+          var content = this.hash.replace('/','').replace('#','');
+          tabs.removeClass("active");
+          $(this).addClass("active");
+          $(tab_group).find('.rr-tab').hide();
+          var href_content=replaceAll(content,'___',' ');
+
+          $('div[title|="'+href_content+'"]').show();
+        });
+
+      });
+    }
+
+    function lazyLoad() {
+      var card_images = document.querySelectorAll('.lazy-load');
+
+      // loop over each card image
+      card_images.forEach(function(content_image) {
+        
+//         var content_image = card_image.querySelector('img');
+        var image_url = content_image.getAttribute('data-image-full');
+
+        // change the src of the content image to load the new high res photo
+        content_image.src = image_url;
+
+        // listen for load event when the new photo is finished loading
+        content_image.addEventListener('load', function() {
+          // swap out the visible background image with the new fully downloaded photo
+//           card_image.style.backgroundImage = 'url(' + image_url + ')';
+          // add a class to remove the blur filter to smoothly transition the image change
+//           card_image.className = card_image.className + ' is-loaded';
+        });
+
+      });
+
+    }
+    
+    (function($) {
+      handle_tab_groups();
+    })(jQuery);
+    
+    
+    (function($) {
+      "use strict";
+      
+      var items = 1;
+//       if ($(window).width() > 600) {
+//         items=2;
+//       }
+
+      // Full Width Carousel
+      $('.owl-slide-auto-play').owlCarousel({
+        nav: true,
+        loop: true,
+        autoplay: true,
+        items: items
+      });
+      
+      $('.owl-slide-no-auto').owlCarousel({
+        nav: true,
+        loop: true,
+        autoplay: false,
+        items: 1
+      });
+
+      // Recent Reviews
+//       $('.owl-list').owlCarousel({
+//         margin: 25,
+//         nav: true,
+//         dots: false,
+//         responsive: {
+//           0: {
+//             items: 1
+//           },
+//           500: {
+//             items: 2
+//           },
+//           701: {
+//             items: 3
+//           },
+//           1000: {
+//             items: 4
+//           }
+//         }
+//       });
+      
+      // Make markdown tables have the bootstrap table class to look pretty
+      $('table').addClass('table');
+     
+      $('table').DataTable();
+
+      // lightbox
+//       $('[data-lightbox]').lightbox();
+      
+      // scroll animations
+      new WOW().init();
+      
+      
+    // START: changlog
+      $('.rr-version-gen').each(function(index) {
+          $(this).replaceWith( `<div>
+              <div class="rr-changelog-version">`+$(this).attr('version')+`</div>
+              <div class="rr-changelog-date">`+$(this).attr('date')+`</div>
+      </div>
+          `);
+      });
+
+      $('.rr-info-gen').each(function(index) {
+        $(this).replaceWith(`<div class="rr-changelog rr-changelog-success">
+                      <div class="rr-changelog-badge">`+$(this).attr('badge')+`</div>
+                      <div class="rr-changelog-info">`+$(this).attr('desc')+`</div>
+                  </div>`);
+      })
+    // END: changelog
+      
+      
+    })(jQuery);
+    
+//     $(document).ready(function() {
+//         $('.postSection .postImage').magnificPopup({
+//           type: 'image',
+//           closeOnContentClick: true,
+//           mainClass: 'mfp-img-mobile',
+//           image: {
+//             verticalFit: true
+//           }
+//         });
+//     });
+  </script>
+<script src="/public/js/main.js"></script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>

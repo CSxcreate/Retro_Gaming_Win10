@@ -1,0 +1,366 @@
+---
+layout: post
+tags: 
+- tools
+- segasaturn
+- saturn
+title: Sega Saturn Save State Visualizer (.yss)
+image: /public/images/saturn/Sega Saturn Save States YSS.jpg
+permalink: /yssVisualizer
+recommend: segasaturn
+editlink: ../tools/SegaSaturnYSSViewer.html
+---
+{% include file-parser.html format="YSS" %}
+
+The emulator Yabause uses a simple format to save the state of the emulated machine, drag and drop a .yss file below and you will be able to see what each of the bytes mean.
+<style>
+  .CART_SECTION {
+    color:green;
+  }
+  .CS2_SECTION {
+    color:yellow;
+  }
+  .Master_SH2_CPU_SECTION {
+    color:purple;
+  }
+  .Slave_SH2_CPU_SECTION {
+    color:pink;
+  }
+  .SOUND_SCSP_SECTION {
+    color:violet;
+  }
+  .SMPC_SECTION {
+    color:olive;
+  }
+  .GRAPHICS_VDP1_SECTION {
+    color:blue;
+  }
+  .GRAPHICS_VDP2_SECTION {
+    color:orange;
+  }
+  .OTHER_SECTION {
+    color:brown;
+  }
+  
+  .SECTION_NAME:before {
+    content: '\00000A';
+  }
+</style>
+
+<script>
+var _window$binary_unpars = window["binary_unparser"],Parser = _window$binary_unpars.Parser,FileUnparser = _window$binary_unpars.FileUnparser,ReactUnparser = _window$binary_unpars.ReactUnparser,Buffer = _window$binary_unpars.Buffer;
+
+var yssVideoHeader = new Parser.Parser()
+.endianess("little")
+.uint32("VIDEO_FRAME_COUNT")
+.uint32("VIDEO_POSITION")
+
+var yssSectionHeader = new Parser.Parser()
+.endianess("little")
+.string("SECTION_NAME", { length: 4 })
+.uint32("SECTION_VERSION")
+.uint32("SECTION_SIZE");
+
+var yssVDP2Registers =   new Parser.Parser()
+  .endianess("little")
+.uint16("TVMD")  // 0x25F80000
+.uint16("EXTEN") // 0x25F80002
+.uint16("TVSTAT")// 0x25F80004
+.uint16("VRSIZE")// 0x25F80006
+.uint16("HCNT")  // 0x25F80008
+.uint16("VCNT")  // 0x25F8000A
+.uint16("RAMCTL")// 0x25F8000E
+.uint16("CYCA0L")// 0x25F80010
+.uint16("CYCA0U")// 0x25F80012
+.uint16("CYCA1L")// 0x25F80014
+.uint16("CYCA1U")// 0x25F80016
+.uint16("CYCB0L")// 0x25F80018
+.uint16("CYCB0U")// 0x25F8001A
+.uint16("CYCB1L")// 0x25F8001C
+.uint16("CYCB1U")// 0x25F8001E
+.uint16("BGON")  // 0x25F80020
+.uint16("MZCTL") // 0x25F80022
+.uint16("SFSEL") // 0x25F80024
+.uint16("SFCODE")// 0x25F80026
+.uint16("CHCTLA")// 0x25F80028
+.uint16("CHCTLB")// 0x25F8002A
+.uint16("BMPNA") // 0x25F8002C
+.uint16("BMPNB") // 0x25F8002E
+.uint16("PNCN0") // 0x25F80030
+.uint16("PNCN1") // 0x25F80032
+.uint16("PNCN2") // 0x25F80034
+.uint16("PNCN3") // 0x25F80036
+.uint16("PNCR")  // 0x25F80038
+.uint16("PLSZ")  // 0x25F8003A
+.uint16("MPOFN") // 0x25F8003C
+.uint16("MPOFR") // 0x25F8003E
+.uint16("MPABN0")// 0x25F80040
+.uint16("MPCDN0")// 0x25F80042
+.uint16("MPABN1")// 0x25F80044
+.uint16("MPCDN1")// 0x25F80046
+.uint16("MPABN2")// 0x25F80048
+.uint16("MPCDN2")// 0x25F8004A
+.uint16("MPABN3")// 0x25F8004C
+.uint16("MPCDN3")// 0x25F8004E
+.uint16("MPABRA")// 0x25F80050
+.uint16("MPCDRA")// 0x25F80052
+.uint16("MPEFRA")// 0x25F80054
+.uint16("MPGHRA")// 0x25F80056
+.uint16("MPIJRA")// 0x25F80058
+.uint16("MPKLRA")// 0x25F8005A
+.uint16("MPMNRA")// 0x25F8005C
+.uint16("MPOPRA")// 0x25F8005E
+.uint16("MPABRB")// 0x25F80060
+.uint16("MPCDRB")// 0x25F80062
+.uint16("MPEFRB")// 0x25F80064
+.uint16("MPGHRB")// 0x25F80066
+.uint16("MPIJRB")// 0x25F80068
+.uint16("MPKLRB")// 0x25F8006A
+.uint16("MPMNRB")// 0x25F8006C
+.uint16("MPOPRB")// 0x25F8006E
+.uint16("SCXIN0")// 0x25F80070
+.uint16("SCXDN0")// 0x25F80072
+.uint16("SCYIN0")// 0x25F80074
+.uint16("SCYDN0")// 0x25F80076
+
+.uint32("ZMXN0") // 0x25F80078
+.uint32("ZMYN0") // 0x25F8007C
+
+.uint16("SCXIN1") // 0x25F80080
+.uint16("SCXDN1") // 0x25F80082
+.uint16("SCYIN1") // 0x25F80084
+.uint16("SCYDN1") // 0x25F80086
+.uint32("ZMXN1") // 0x25F80088
+.uint32("ZMYN1") // 0x25F8008C
+.uint16("SCXN2")  // 0x25F80090
+.uint16("SCYN2")  // 0x25F80092
+.uint16("SCXN3")  // 0x25F80094
+.uint16("SCYN3")  // 0x25F80096
+.uint16("ZMCTL")  // 0x25F80098
+.uint16("SCRCTL") // 0x25F8009A
+.uint32("VCSTA") // 0x25F8009C
+.uint32("LSTA0") // 0x25F800A0
+.uint32("LSTA1") // 0x25F800A4
+.uint32("LCTA")// 0x25F800A8
+.uint16("BKTAU")  // 0x25F800AC
+.uint16("BKTAL")  // 0x25F800AE
+.uint16("RPMD")   // 0x25F800B0
+.uint16("RPRCTL") // 0x25F800B2
+.uint16("KTCTL")  // 0x25F800B4
+.uint16("KTAOF")  // 0x25F800B6
+.uint16("OVPNRA") // 0x25F800B8
+.uint16("OVPNRB") // 0x25F800BA
+.uint32("RPTA") // 0x25F800BC
+.uint16("WPSX0")  // 0x25F800C0
+.uint16("WPSY0")  // 0x25F800C2
+.uint16("WPEX0")  // 0x25F800C4
+.uint16("WPEY0")  // 0x25F800C6
+.uint16("WPSX1")  // 0x25F800C8
+.uint16("WPSY1")  // 0x25F800CA
+.uint16("WPEX1")  // 0x25F800CC
+.uint16("WPEY1")  // 0x25F800CE
+.uint16("WCTLA")  // 0x25F800D0
+.uint16("WCTLB")  // 0x25F800D2
+.uint16("WCTLC")  // 0x25F800D4
+.uint16("WCTLD")  // 0x25F800D6
+.uint32("LWTA0") // 0x25F800D8
+.uint32("LWTA1") // 0x25F800DC
+.uint16("SPCTL")  // 0x25F800E0
+.uint16("SDCTL")  // 0x25F800E2
+.uint16("CRAOFA") // 0x25F800E4
+.uint16("CRAOFB") // 0x25F800E6
+.uint16("LNCLEN") // 0x25F800E8
+.uint16("SFPRMD") // 0x25F800EA
+.uint16("CCCTL")  // 0x25F800EC
+.uint16("SFCCMD") // 0x25F800EE
+.uint16("PRISA")  // 0x25F800F0
+.uint16("PRISB")  // 0x25F800F2
+.uint16("PRISC")  // 0x25F800F4
+.uint16("PRISD")  // 0x25F800F6
+.uint16("PRINA")  // 0x25F800F8
+.uint16("PRINB")  // 0x25F800FA
+.uint16("PRIR")   // 0x25F800FC
+.uint16("CCRSA")  // 0x25F80100
+.uint16("CCRSB")  // 0x25F80102
+.uint16("CCRSC")  // 0x25F80104
+.uint16("CCRSD")  // 0x25F80106
+.uint16("CCRNA")  // 0x25F80108
+.uint16("CCRNB")  // 0x25F8010A
+.uint16("CCRR")   // 0x25F8010C
+.uint16("CCRLB")  // 0x25F8010E
+.uint16("CLOFEN") // 0x25F80110
+.uint16("CLOFSL") // 0x25F80112
+.uint16("COAR")   // 0x25F80114
+.uint16("COAG")   // 0x25F80116
+.uint16("COAB")   // 0x25F80118
+.uint16("COBR")   // 0x25F8011A
+.uint16("COBG")   // 0x25F8011C
+.uint16("COBB")   // 0x25F8011E
+	  .array("VDP2_REGS", {
+	    type: "uint8",
+	    length: 4 })
+; 
+
+var yssVDP2Section = new Parser.Parser()
+  .endianess("little")
+  .nest("HEADER", { type: yssSectionHeader})
+  .nest("VDP2_Registers", { type: yssVDP2Registers})
+  .array("VDP2_RAM", {
+    type: "uint8",
+    length: 0x80000 
+  })
+  .array("VDP2_COLOR_RAM", {
+    type: "uint8",
+    length: 0x1000 
+  })
+  .int32("COLOR_MODE");
+  
+  
+var yssVDP1Registers =   new Parser.Parser()
+  .endianess("little")
+  .uint16("TVMR")
+  .uint16("FBCR")
+  .uint16("PTMR")
+  .uint16("EWDR")
+  .uint16("EWLR")
+  .uint16("EWRR")
+  .uint16("ENDR")
+  .uint16("EDSR")
+  .uint16("LOPR")
+  .uint16("COPR")
+  .uint16("MODR")
+  .uint32("addr")
+   .int32("disptoggle_dont_use_me")
+   .int16("localX")
+   .int16("localY")
+   .uint16("systemclipX1")
+   .uint16("systemclipY1")
+   .uint16("systemclipX2")
+   .uint16("systemclipY2")
+   .uint16("userclipX1")
+   .uint16("userclipY1")
+   .uint16("userclipX2")
+   .uint16("userclipY2")
+
+
+var yssVDP1Section = new Parser.Parser()
+  .endianess("little")
+//   .nest("HEADER", { type: yssSectionHeader})
+  .string("SECTION_NAME", { length: 4 })
+  .uint32("SECTION_VERSION")
+  .uint32("SECTION_SIZE")
+  .nest("VDP1_Registers", { type: yssVDP1Registers})
+  .array("VDP1_RAM", {
+    type: "uint8",
+    length: 0x80000 
+  })
+  .array("SECTION_CONTENT", {
+    type: "uint8",
+    length: function() { return this.SECTION_SIZE - 0x80000 - 50 } });
+
+//   .array("IMPROVED_SAVE_STATE", {
+//     type: "uint8",
+//     length: 0x40000 
+//   })
+;
+  
+ 
+
+var yssOtherSection = new Parser.Parser()
+.endianess("little")
+.nest("OTHER_SECTION_HEADER", { type: yssSectionHeader})
+.array("BUP_RAM", {
+  type: "uint8",
+  length: 0x10000 })
+.array("HIGH_WORK_RAM", {
+  type: "uint8",
+  length: 0x100000 })
+.array("LOW_WORK_RAM", {
+  type: "uint8",
+  length: 0x100000 })
+.int32("DECILINE_COUNT")
+.int32("LINE_COUNT")
+.int32("VBLANK_LINE_COUNT")
+.int32("MAX_LINE_COUNT")
+.int32("TEMP1")
+.int32("TEMP2")
+.uint32("TEMP3")
+.int32("CUR_SH2_FREQ_TYPE")
+.int32("IS_PAL")
+.int32("OUTPUT_WIDTH")
+.int32("OUTPUT_HEIGHT")
+.int32("UNKNOWN_")
+;
+// CurSH2FreqType
+//   IsPal
+
+
+
+var yssSectionDefault = new Parser.Parser()
+.endianess("little")
+.string("SECTION_NAME", { length: 4 })
+.uint32("SECTION_VERSION")
+.uint32("SECTION_SIZE")
+// .skip(function() { return this.SECTION_SIZE } }));
+.array("SECTION_CONTENT", {
+  type: "uint8",
+  length: function() { return this.SECTION_SIZE } });
+  
+// YSS File Parser
+var yssHeader = new Parser.Parser()
+.endianess("little")
+.string("YSS_SIGNATURE", { length: 3 })
+.uint8("HEADER_ENDIAN", { assertWithoutErroring: 0x01 })
+.uint32("HEADER_VERSION", { assertWithoutErroring: 0x02 })
+.uint32("HEADER_SIZE")
+// IF HEADER VERSION == 2 THEN READ VIDEO
+.choice("HEADER_VIDEO", {
+  tag: "HEADER_VERSION",
+  choices: {
+    2: yssVideoHeader
+  },
+  defaultChoice: new Parser.Parser()
+})
+.nest("CART_SECTION", { type: yssSectionDefault})
+.nest("CS2_SECTION", { type: yssSectionDefault})
+.nest("Master_SH2_CPU_SECTION", { type: yssSectionDefault})
+.nest("Slave_SH2_CPU_SECTION", { type: yssSectionDefault})
+.nest("SOUND_SCSP_SECTION", { type: yssSectionDefault})
+.nest("SCU_SECTION", { type: yssSectionDefault})
+.nest("SYSTEM_MANAGEMENT_PERIPHERAL_CONTROL_SMPC_SECTION", { type: yssSectionDefault})
+.nest("GRAPHICS_VDP1_SECTION", { type: yssVDP1Section})
+.nest("GRAPHICS_VDP2_SECTION", { type: yssVDP2Section})
+.nest("OTHER_SECTION", { type: yssOtherSection})
+;
+
+var yssFileUnParser = new ReactUnparser(yssHeader);
+
+
+var draghint = document.getElementById('draghint');
+window.addEventListener('drop', function (event) {
+  event.preventDefault();
+  draghint.classList.remove('hover');
+  for (var i = 0; i < event.dataTransfer.files.length; i++) {
+    var file = event.dataTransfer.files[i];
+    var c = document.createElement('canvas');
+    c.id = 'v64' + i;
+    $('#v64').append(c);
+    console.log(file, i, c);
+    parseFile(file, yssHeader, yssFileUnParser, false);
+  }
+  return false;
+});
+window.addEventListener('dragover', function (event) {
+  event.preventDefault();
+  draghint.classList.add('hover');
+  return false;
+});
+window.addEventListener('dragleave', function (event) {
+  event.preventDefault();
+  draghint.classList.remove('hover');
+  return false;
+});
+window.addEventListener('focus', function () {
+  return draghint.classList.remove('hover');
+});
+  </script>
